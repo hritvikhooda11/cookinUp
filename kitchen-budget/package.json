@@ -6,12 +6,27 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "build:demo": "esbuild demo/demo.ts --bundle --format=iife --outfile=demo/demo.js",
-    "demo": "npm run build:demo && open demo/index.html"
+    "build:demo": "esbuild demo/demo.tsx --bundle --format=iife --jsx=automatic --outdir=demo/dist",
+    "demo": "npm run build:demo && python3 -m http.server 5178 --directory demo"
   },
   "devDependencies": {
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
     "esbuild": "0.28.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "typescript": "^5.6.0",
-    "vitest": "5.0.5"
+    "vitest": "5.0.5",
+    "zod": "^3.25.76",
+    "zustand": "^5.0.15"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "zod": "^3.23.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
   }
 }

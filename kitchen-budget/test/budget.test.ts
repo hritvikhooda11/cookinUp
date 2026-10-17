@@ -12,10 +12,10 @@ import {
 } from "../src";
 
 const kitchen = (): StationBudgetInput[] => [
-  { id: "food", title: "Food spots", depends_on: [], model: "claude-sonnet-5-5", baseBudget: 1500, effort: "normal" },
-  { id: "budget", title: "Budget", depends_on: [], model: "claude-haiku-5-5", baseBudget: 1000, effort: "normal" },
-  { id: "map", title: "Map", depends_on: [], model: "claude-haiku-5-5", baseBudget: 1000, effort: "normal" },
-  { id: "itin", title: "Itinerary", depends_on: ["food", "budget", "map"], model: "claude-sonnet-5-5", baseBudget: 2500, effort: "normal" },
+  { id: "food", title: "Food spots", depends_on: [], model: "claude-sonnet-5-5", token_budget: 1500, effort: "normal" },
+  { id: "budget", title: "Budget", depends_on: [], model: "claude-haiku-5-5", token_budget: 1000, effort: "normal" },
+  { id: "map", title: "Map", depends_on: [], model: "claude-haiku-5-5", token_budget: 1000, effort: "normal" },
+  { id: "itin", title: "Itinerary", depends_on: ["food", "budget", "map"], model: "claude-sonnet-5-5", token_budget: 2500, effort: "normal" },
 ];
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
 
@@ -170,9 +170,9 @@ describe("suggestTuning", () => {
       ["map", "trim"],
     ]);
     const next = applySuggestions(k, s);
-    expect(next[0]!.baseBudget).toBe(2300);
+    expect(next[0]!.token_budget).toBe(2300);
     expect(next[1]!.effort).toBe("double");
-    expect(next[2]!.baseBudget).toBe(400);
+    expect(next[2]!.token_budget).toBe(400);
   });
 });
 

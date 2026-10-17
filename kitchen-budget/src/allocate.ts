@@ -12,7 +12,7 @@ export interface StationBudgetInput {
   depends_on: string[];
   model: string;
   /** Planner's suggested output-token budget at "normal" effort. */
-  baseBudget: number;
+  token_budget: number;
   effort: Effort;
   /** User pinned this station's budget: it is never squeezed to make room for others. */
   locked?: boolean;
@@ -43,7 +43,7 @@ export interface StationAllocation {
   effort: Effort;
   apiEffort: ApiEffort;
   passes: number;
-  /** What this station would get with unlimited ingredients: baseBudget x multiplier. */
+  /** What this station would get with unlimited ingredients: token_budget x multiplier. */
   desired: number;
   /** What it actually gets, summed over all passes. */
   budget: number;
@@ -123,7 +123,7 @@ export function allocate(stations: StationBudgetInput[], options: AllocateOption
     const tier = EFFORT_TIERS[s.effort];
     const ceiling = maxPerPass * tier.passes;
     const floor = minPerPass * tier.passes;
-    const desired = Math.min(ceiling, Math.max(floor, Math.round(s.baseBudget * tier.multiplier)));
+    const desired = Math.min(ceiling, Math.max(floor, Math.round(s.token_budget * tier.multiplier)));
     const priority = isBoosted(s.effort) || !!s.locked;
     // What later groups keep back from earlier ones: their floor, or the protected share of their portion.
     const protectedFloor = priority ? floor : Math.max(floor, Math.floor(desired * protectShare));

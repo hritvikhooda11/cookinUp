@@ -4,145 +4,46 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Pantry Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet" />
 <style>
-:root {
-  --bg: #f6f1e9; --panel: #fffdf9; --ink: #2a2420; --muted: #7a6f66; --line: #e6dccf;
-  --accent: #c2410c; --good: #15803d; --bad: #b91c1c; --track: #efe6da;
-  --skin: #f3c9a3; --coat: #ffffff; --sweat: #60a5fa;
-  --c0: #d97706; --c1: #0f766e; --c2: #7c3aed; --c3: #db2777;
-  --shadow: 0 1px 2px rgba(42,36,32,.06), 0 4px 16px rgba(42,36,32,.06);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #17130f; --panel: #221c17; --ink: #f2ebe3; --muted: #a8998b; --line: #3a3029;
-    --accent: #fb923c; --good: #4ade80; --bad: #f87171; --track: #2e2620;
-    --skin: #e0b48c; --coat: #e8e2da; --sweat: #93c5fd;
-    --c0: #fbbf24; --c1: #2dd4bf; --c2: #a78bfa; --c3: #f472b6;
-    --shadow: none;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #17130f; --panel: #221c17; --ink: #f2ebe3; --muted: #a8998b; --line: #3a3029;
-  --accent: #fb923c; --good: #4ade80; --bad: #f87171; --track: #2e2620;
-  --skin: #e0b48c; --coat: #e8e2da; --sweat: #93c5fd;
-  --c0: #fbbf24; --c1: #2dd4bf; --c2: #a78bfa; --c3: #f472b6;
-  --shadow: none;
-}
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
-main { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
-h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -.01em; }
-h2 { font-size: 15px; margin: 0 0 10px; }
-h3 { font-size: 15px; margin: 0; }
-.lede { color: var(--muted); margin: 0 0 22px; max-width: 70ch; }
-.muted { color: var(--muted); margin: 0; }
-.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); }
-.controls { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 16px; }
-.slider-row { display: flex; align-items: center; gap: 12px; }
-.slider-row input[type=range] { flex: 1; accent-color: var(--accent); }
-.big { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; }
-.stats { display: flex; gap: 22px; margin-top: 12px; flex-wrap: wrap; }
-.stats dt { font-size: 12px; color: var(--muted); }
-.stats dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
-.bad { color: var(--bad); }
-.pantry { display: flex; height: 12px; border-radius: 6px; background: var(--track); overflow: hidden; margin-top: 14px; }
-.pantry .seg { height: 100%; transition: width .35s ease; border-right: 2px solid var(--panel); }
-.seg.c0, .got.c0 { background: var(--c0); } .seg.c1, .got.c1 { background: var(--c1); }
-.seg.c2, .got.c2 { background: var(--c2); } .seg.c3, .got.c3 { background: var(--c3); }
-.chef.c0 { color: var(--c0); } .chef.c1 { color: var(--c1); } .chef.c2 { color: var(--c2); } .chef.c3 { color: var(--c3); }
-.mode { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-.mode label { display: flex; gap: 6px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
-.mode label:has(input:checked) { border-color: var(--accent); }
-.bill .big { color: var(--accent); }
-#warnings { margin: 10px 0 0; padding-left: 18px; color: var(--bad); font-size: 13px; }
-#warnings:empty { display: none; }
-.stations { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 14px; }
-.station { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px; user-select: none; box-shadow: var(--shadow); transition: border-color .2s; }
-.station.effort-double, .station.effort-max { border-color: var(--accent); }
-.station header { display: flex; gap: 10px; align-items: center; }
-.station .title { flex: 1; min-width: 0; }
-.deps { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
-.lock { font-size: 12px; color: var(--muted); display: flex; gap: 4px; align-items: center; cursor: pointer; }
-.effort-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
-button { font: inherit; color: inherit; }
-.effort { font-size: 11.5px; padding: 6px 2px; border-radius: 7px; border: 1px solid var(--line); background: transparent; cursor: pointer; }
-.effort:hover { border-color: var(--muted); }
-.effort.on { background: var(--ink); color: var(--panel); border-color: var(--ink); }
-.meter { position: relative; height: 10px; border-radius: 5px; background: var(--track); overflow: hidden; }
-.meter span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; transition: width .35s ease; }
-.meter .want { background: repeating-linear-gradient(45deg, var(--line) 0 4px, transparent 4px 8px); }
-.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin: 0; }
-.facts dt { font-size: 11.5px; color: var(--muted); }
-.facts dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; }
-.squeezed { color: var(--bad); font-weight: 500; font-size: 12px; }
-code { font: 12.5px ui-monospace, SFMono-Regular, Menlo, monospace; }
-.station footer { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
-.station footer label { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 100px; }
-select, input[type=number] { font: inherit; font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 7px; padding: 5px 6px; }
-.tuner { margin-top: 16px; display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; }
-.btn { border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 600; }
-.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
-#suggestions ul { margin: 0 0 10px; padding-left: 18px; }
-#suggestions li { margin-bottom: 4px; }
-#suggestions .more-ingredients strong { color: var(--accent); }
-#suggestions .trim strong { color: var(--good); }
-#suggestions .work-harder strong { color: var(--c2); }
-#apply { border: 1px solid var(--ink); background: var(--ink); color: var(--panel); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
-.hint { font-size: 12.5px; color: var(--muted); margin: 10px 0 14px; }
-.sweat { animation: drip 1.1s ease-in infinite; }
-.arm.a1 { animation: chop .35s ease-in-out infinite alternate; transform-origin: 15px 37px; }
-.arm.a2 { animation: chop .35s ease-in-out infinite alternate-reverse; transform-origin: 33px 37px; }
-@keyframes drip { from { transform: translateY(0); opacity: 1; } to { transform: translateY(6px); opacity: 0; } }
-@keyframes chop { from { transform: rotate(-20deg); } to { transform: rotate(20deg); } }
-@media (prefers-reduced-motion: reduce) { .sweat, .arm { animation: none; } }
-@media (max-width: 720px) { .controls, .tuner { grid-template-columns: 1fr; } }
+:root { --bg: #2b2a3d; --text: #f4ecd6; }
+body { margin: 0; background: var(--bg); background-image: linear-gradient(45deg, #302f44 25%, transparent 25%, transparent 75%, #302f44 75%), linear-gradient(45deg, #302f44 25%, transparent 25%, transparent 75%, #302f44 75%); background-size: 32px 32px; background-position: 0 0, 16px 16px; color: var(--text); font: 16px/1.4 "Pixelify Sans", ui-monospace, monospace; }
+main.kb { color: var(--text); max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; display: flex; flex-direction: column; gap: 16px; }
+.top { display: flex; gap: 16px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
+.top p { max-width: 60ch; margin: 6px 0 0; opacity: .85; }
+h1 { margin: 0; font-size: 28px; letter-spacing: 2px; color: #f6c453; text-shadow: 3px 3px 0 #1b1a2e; }
+h2 { margin: 0; font-size: 17px; }
+.top .kb-ticket { color: var(--kb-ink); min-width: 190px; }
+.panel { color: var(--kb-ink); padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.row input[type=range] { flex: 1; min-width: 160px; accent-color: #e67e22; }
+.chip { font: inherit; font-size: 14px; color: var(--kb-ink); background: var(--kb-panel); border: 3px solid var(--kb-ink); border-radius: 0; padding: 6px 10px; cursor: pointer; box-shadow: 0 3px 0 0 var(--kb-ink); }
+.chip[aria-pressed="true"] { background: var(--kb-ink); color: var(--kb-panel); }
+.chip:active { transform: translateY(3px); box-shadow: none; }
+.chip:disabled { opacity: .6; cursor: progress; }
+.chip.go { background: #f6c453; font-size: 16px; padding: 10px 14px; }
+.warn { margin: 0; color: var(--kb-squeeze); font-size: 14px; }
+.hint { margin: 0; font-size: 14px; opacity: .8; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 16px; }
+.station { color: var(--kb-ink); padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.station[data-boosted] { box-shadow: 3px 3px 0 0 var(--kb-ink), 0 0 0 3px #f6c453; }
+.head { display: flex; gap: 10px; align-items: center; cursor: pointer; user-select: none; }
+.sprite { position: relative; background: var(--kb-paper); border: 3px solid var(--kb-ink); width: 70px; height: 70px; display: grid; place-items: center; flex: none; }
+.sprite .badge { position: absolute; top: -14px; left: -10px; }
+.meta { margin: 2px 0 0; font-size: 13px; color: var(--kb-muted); }
+.foot select { font: inherit; font-size: 14px; border: 3px solid var(--kb-ink); border-radius: 0; background: var(--kb-panel); color: var(--kb-ink); padding: 3px 4px; flex: 1; }
+.pin { font-size: 13px; display: flex; gap: 4px; align-items: center; cursor: pointer; }
+.tuner { flex-direction: row; align-items: flex-start; flex-wrap: wrap; }
+.tuner ul { margin: 0 0 8px; padding-left: 18px; }
+.tuner li { margin-bottom: 4px; }
+.arm { animation: chop steps(2) infinite alternate; transform-origin: 8px 12px; }
+@keyframes chop { from { transform: translateY(0); } to { transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) { .arm { animation: none; } }
 </style>
 </head>
 <body>
-<main>
-  <h1>Pantry Manager</h1>
-  <p class="lede">Choose how hard each chef works. A boosted chef gets more ingredients (output tokens), a higher reasoning effort and, at All hands, a second taste-and-fix pass. In fixed mode the other chefs give up ingredients to make room.</p>
-
-  <section class="controls">
-    <div class="panel">
-      <h2>Kitchen budget</h2>
-      <div class="slider-row">
-        <input id="total" type="range" min="2000" max="20000" step="500" aria-label="Total token budget" />
-        <span class="big"><span id="total-label"></span> tok</span>
-      </div>
-      <div class="mode" role="radiogroup" aria-label="Budget mode">
-        <label><input type="radio" name="mode" value="fixed" /> Fixed total: boosts take from others</label>
-        <label><input type="radio" name="mode" value="flex" /> Flex: boosts add to the total</label>
-      </div>
-      <div class="pantry" id="pantry-bar" aria-label="How the pantry is split"></div>
-      <dl class="stats">
-        <div><dt>Allocated</dt><dd id="allocated"></dd></div>
-        <div><dt id="reserve-label">In reserve</dt><dd id="reserve"></dd></div>
-      </dl>
-      <ul id="warnings"></ul>
-    </div>
-    <div class="panel bill">
-      <h2>The bill (worst case)</h2>
-      <div class="big" id="bill"></div>
-      <p class="muted" id="bill-compare"></p>
-      <p class="hint">Upper bound: every chef uses all their ingredients. Upstream output counts as input downstream.</p>
-    </div>
-  </section>
-
-  <p class="hint">Tip: double-click a chef to cycle Light prep → Normal → Double shift → All hands.</p>
-  <section class="stations" id="stations"></section>
-
-  <section class="panel tuner">
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <button class="btn" id="simulate">Run a service</button>
-      <button class="btn ghost" id="reset">Reset efforts</button>
-    </div>
-    <div>
-      <h2>Tuning from the last service</h2>
-      <div id="suggestions"></div>
-    </div>
-  </section>
-</main>
-<script src="demo.js"></script>
+<div id="root"></div>
+<script src="dist/demo.js"></script>
 </body>
 </html>

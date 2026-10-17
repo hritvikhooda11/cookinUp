@@ -20,7 +20,7 @@ export interface Suggestion {
   stationId: string;
   kind: SuggestionKind;
   reason: string;
-  patch: Partial<Pick<StationBudgetInput, "baseBudget" | "effort">>;
+  patch: Partial<Pick<StationBudgetInput, "token_budget" | "effort">>;
 }
 
 export interface TuneOptions {
@@ -64,7 +64,7 @@ export function suggestTuning(
         stationId: s.id,
         kind: "more-ingredients",
         reason: `${name} ran out of ingredients (hit its ${a.maxTokensPerPass}-token limit).`,
-        patch: { baseBudget: roundUp100(s.baseBudget * growBy) },
+        patch: { token_budget: roundUp100(s.token_budget * growBy) },
       });
       continue;
     }
@@ -73,7 +73,7 @@ export function suggestTuning(
       out.push({
         stationId: s.id,
         kind: "work-harder",
-        reason: `The expediter sent back ${name}'s dish; move it to ${EFFORT_TIERS[next].label}.`,
+        reason: `The expediter sent back the dish from ${name}; move it to ${EFFORT_TIERS[next].label}.`,
         patch: { effort: next },
       });
       continue;
@@ -81,12 +81,12 @@ export function suggestTuning(
     if (!s.locked && a.budget > 0 && u.outputTokens < a.budget * trimBelow) {
       const multiplier = EFFORT_TIERS[s.effort].multiplier;
       const newBase = Math.max(minBase, roundUp100((u.outputTokens * headroom) / multiplier));
-      if (newBase < s.baseBudget) {
+      if (newBase < s.token_budget) {
         out.push({
           stationId: s.id,
           kind: "trim",
           reason: `${name} used ${u.outputTokens} of ${a.budget} tokens; free up the leftovers.`,
-          patch: { baseBudget: newBase },
+          patch: { token_budget: newBase },
         });
       }
     }
