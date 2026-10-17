@@ -1,0 +1,17 @@
+{
+  "name": "kitchen-budget",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build:demo": "esbuild demo/demo.ts --bundle --format=iife --outfile=demo/demo.js",
+    "demo": "npm run build:demo && open demo/index.html"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "typescript": "^5.6.0",
+    "vitest": "5.0.5"
+  }
+}
